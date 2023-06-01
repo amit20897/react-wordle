@@ -1,14 +1,13 @@
 import firebase from 'firebase'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCgHnPgmw0f1xSY6z4RoQ1coaSjXVT7hkM',
-  authDomain: 'webullar-7a550.firebaseapp.com',
-  databaseURL: 'https://webullar-7a550.firebaseio.com',
-  projectId: 'webullar-7a550',
-  storageBucket: 'webullar-7a550.appspot.com',
-  messagingSenderId: '53766183375',
-  appId: '1:53766183375:web:15b8f9c11b8e3001e65aba',
-  measurementId: 'G-RE24WCZP7F',
+  apiKey: 'AIzaSyCrYS8U4zjlAz4dViYl4f12ggLEmYXvU8g',
+  authDomain: 'eliyadel.firebaseapp.com',
+  projectId: 'eliyadel',
+  storageBucket: 'eliyadel.appspot.com',
+  messagingSenderId: '834825386214',
+  appId: '1:834825386214:web:b92a9eab09bbcba1de2327',
+  measurementId: 'G-X2118QWRZP',
 }
 
 if (firebase.apps.length === 0) {
