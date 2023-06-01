@@ -20,20 +20,25 @@ export const firstGameDate = new Date(2022, 0)
 export const periodInDays = 1
 
 export const isWordInWordList = (word: string) => {
+  return true
   return (
     WORDS.includes(localeAwareLowerCase(word)) ||
     VALID_GUESSES.includes(localeAwareLowerCase(word))
   )
 }
 
-export const isWinningWord = (word: string) => {
+export const isWinningWord = (solution: string, word: string) => {
   return solution === word
 }
 
 // build a set of previously revealed letters - present and correct
 // guess must use correct letters in that space and any other revealed letters
 // also check if all revealed instances of a letter are used (i.e. two C's)
-export const findFirstUnusedReveal = (word: string, guesses: string[]) => {
+export const findFirstUnusedReveal = (
+  solution: string,
+  word: string,
+  guesses: string[]
+) => {
   if (guesses.length === 0) {
     return false
   }
@@ -176,5 +181,6 @@ export const getIsLatestGame = () => {
   return parsed === null || !('d' in parsed)
 }
 
-export const { solution, solutionGameDate, solutionIndex, tomorrow } =
-  getSolution(getGameDate())
+export const { solutionGameDate, solutionIndex, tomorrow } = getSolution(
+  getGameDate()
+)

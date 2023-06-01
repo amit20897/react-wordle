@@ -15,8 +15,8 @@ export const WRONG_SPOT_MESSAGE = (guess: string, position: number) =>
   `Must use ${guess} in position ${position}`
 export const NOT_CONTAINED_MESSAGE = (letter: string) =>
   `Guess must contain ${letter}`
-export const ENTER_TEXT = 'Enter'
-export const DELETE_TEXT = 'Delete'
+export const ENTER_TEXT = 'בצע'
+export const DELETE_TEXT = 'מחק'
 export const STATISTICS_TITLE = 'Statistics'
 export const GUESS_DISTRIBUTION_TEXT = 'Guess Distribution'
 export const NEW_WORD_TEXT = 'New word in'
@@ -37,3 +37,6 @@ export const DATEPICKER_TITLE = 'Choose a past date'
 export const DATEPICKER_CHOOSE_TEXT = 'Choose'
 export const DATEPICKER_TODAY_TEXT = 'today'
 export const ARCHIVE_GAMEDATE_TEXT = 'Game date'
+export const SOLUTION_GROUP_1 = 'מחתרת'
+export const SOLUTION_GROUP_2 = 'ורדים'
+export const SOLUTION_GROUP_3 = 'תפוז'

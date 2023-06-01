@@ -3,6 +3,7 @@ import {
   ChartBarIcon,
   CogIcon,
   InformationCircleIcon,
+  RefreshIcon,
 } from '@heroicons/react/outline'
 
 import { ENABLE_ARCHIVED_GAMES } from '../../constants/settings'
@@ -13,6 +14,7 @@ type Props = {
   setIsStatsModalOpen: (value: boolean) => void
   setIsDatePickerModalOpen: (value: boolean) => void
   setIsSettingsModalOpen: (value: boolean) => void
+  restart: () => void
 }
 
 export const Navbar = ({
@@ -20,14 +22,19 @@ export const Navbar = ({
   setIsStatsModalOpen,
   setIsDatePickerModalOpen,
   setIsSettingsModalOpen,
+  restart,
 }: Props) => {
   return (
     <div className="navbar">
       <div className="navbar-content px-5 short:h-auto">
         <div className="flex">
-          <InformationCircleIcon
+          {/* <InformationCircleIcon
             className="h-6 w-6 cursor-pointer dark:stroke-white"
             onClick={() => setIsInfoModalOpen(true)}
+          /> */}
+          <RefreshIcon
+            className="ml-3 h-6 w-6 cursor-pointer dark:stroke-white"
+            onClick={() => restart()}
           />
           {ENABLE_ARCHIVED_GAMES && (
             <CalendarIcon
@@ -38,14 +45,14 @@ export const Navbar = ({
         </div>
         <p className="text-xl font-bold dark:text-white">{GAME_TITLE}</p>
         <div className="right-icons">
-          <ChartBarIcon
+          {/* <ChartBarIcon
             className="mr-3 h-6 w-6 cursor-pointer dark:stroke-white"
             onClick={() => setIsStatsModalOpen(true)}
           />
           <CogIcon
             className="h-6 w-6 cursor-pointer dark:stroke-white"
             onClick={() => setIsSettingsModalOpen(true)}
-          />
+          /> */}
         </div>
       </div>
       <hr></hr>

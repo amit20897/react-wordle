@@ -43,7 +43,13 @@ export const Keyboard = ({
       } else {
         const key = localeAwareUpperCase(e.key)
         // TODO: check this test if the range works with non-english letters
-        if (key.length === 1 && key >= 'A' && key <= 'Z') {
+        if (
+          key.length === 1 &&
+          // (key >= 'A' && key <= 'Z') ||
+          key >= 'א' &&
+          key <= 'ת' &&
+          !['ם', 'ף', 'ץ', 'ן', 'ך'].includes(key)
+        ) {
           onChar(key)
         }
       }
@@ -57,41 +63,44 @@ export const Keyboard = ({
   return (
     <div>
       <div className="mb-1 flex justify-center">
-        {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((key) => (
+        {['ק', 'ר', 'א', 'ט', 'ו', 'פ'].map((key) => (
           <Key
             value={key}
             key={key}
             onClick={onClick}
             status={charStatuses[key]}
             isRevealing={isRevealing}
+            solution={solution}
           />
         ))}
       </div>
       <div className="mb-1 flex justify-center">
-        {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map((key) => (
+        {['ש', 'ד', 'ג', 'כ', 'ע', 'י', 'ח', 'ל'].map((key) => (
           <Key
             value={key}
             key={key}
             onClick={onClick}
             status={charStatuses[key]}
             isRevealing={isRevealing}
+            solution={solution}
           />
         ))}
       </div>
       <div className="flex justify-center">
-        <Key width={65.4} value="ENTER" onClick={onClick}>
+        <Key width={65.4} value="ENTER" onClick={onClick} solution={solution}>
           {ENTER_TEXT}
         </Key>
-        {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((key) => (
+        {['ז', 'ס', 'ב', 'ה', 'נ', 'מ', 'צ', 'ת'].map((key) => (
           <Key
             value={key}
             key={key}
             onClick={onClick}
             status={charStatuses[key]}
             isRevealing={isRevealing}
+            solution={solution}
           />
         ))}
-        <Key width={65.4} value="DELETE" onClick={onClick}>
+        <Key width={65.4} value="DELETE" onClick={onClick} solution={solution}>
           {DELETE_TEXT}
         </Key>
       </div>

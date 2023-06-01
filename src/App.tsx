@@ -15,11 +15,11 @@ import { MigrateStatsModal } from './components/modals/MigrateStatsModal'
 import { SettingsModal } from './components/modals/SettingsModal'
 import { StatsModal } from './components/modals/StatsModal'
 import { Navbar } from './components/navbar/Navbar'
+import { ToggleButton } from './components/toggle-button/ToggleButton'
 import {
   DATE_LOCALE,
   DISCOURAGE_INAPP_BROWSERS,
   LONG_ALERT_TIME_MS,
-  MAX_CHALLENGES,
   REVEAL_TIME_MS,
   WELCOME_INFO_MODAL_MS,
 } from './constants/settings'
@@ -30,6 +30,9 @@ import {
   HARD_MODE_ALERT_MESSAGE,
   NOT_ENOUGH_LETTERS_MESSAGE,
   SHARE_FAILURE_TEXT,
+  SOLUTION_GROUP_1,
+  SOLUTION_GROUP_2,
+  SOLUTION_GROUP_3,
   WIN_MESSAGES,
   WORD_NOT_FOUND_MESSAGE,
 } from './constants/strings'
@@ -49,7 +52,6 @@ import {
   isWinningWord,
   isWordInWordList,
   setGameDate,
-  solution,
   solutionGameDate,
   unicodeLength,
 } from './lib/words'
@@ -69,9 +71,11 @@ function App() {
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false)
   const [isMigrateStatsModalOpen, setIsMigrateStatsModalOpen] = useState(false)
+  const [maxChallenges, setMaxChallenges] = useState(5)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
+  const [group, setGroup] = useState('קבוצה 1')
   const [isDarkMode, setIsDarkMode] = useState(
     localStorage.getItem('theme')
       ? localStorage.getItem('theme') === 'dark'
@@ -83,16 +87,18 @@ function App() {
     getStoredIsHighContrastMode()
   )
   const [isRevealing, setIsRevealing] = useState(false)
+  const [solution, setSolution] = useState(SOLUTION_GROUP_1)
   const [guesses, setGuesses] = useState<string[]>(() => {
     const loaded = loadGameStateFromLocalStorage(isLatestGame)
-    if (loaded?.solution !== solution) {
-      return []
-    }
+    // if (loaded?.solution !== solution) {
+    //   return []
+    // }
+    if (!loaded) return []
     const gameWasWon = loaded.guesses.includes(solution)
     if (gameWasWon) {
       setIsGameWon(true)
     }
-    if (loaded.guesses.length === MAX_CHALLENGES && !gameWasWon) {
+    if (loaded.guesses.length === maxChallenges && !gameWasWon) {
       setIsGameLost(true)
       showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
         persist: true,
@@ -118,6 +124,27 @@ function App() {
       }, WELCOME_INFO_MODAL_MS)
     }
   })
+
+  useEffect(() => {
+    if (!group) return
+
+    switch (group) {
+      case 'קבוצה 1':
+        setSolution(SOLUTION_GROUP_1)
+        setMaxChallenges(5)
+        break
+
+      case 'קבוצה 2':
+        setSolution(SOLUTION_GROUP_2)
+        setMaxChallenges(5)
+        break
+
+      case 'קבוצה 3':
+        setSolution(SOLUTION_GROUP_3)
+        setMaxChallenges(4)
+        break
+    }
+  }, [group])
 
   useEffect(() => {
     DISCOURAGE_INAPP_BROWSERS &&
@@ -191,7 +218,7 @@ function App() {
   const onChar = (value: string) => {
     if (
       unicodeLength(`${currentGuess}${value}`) <= solution.length &&
-      guesses.length < MAX_CHALLENGES &&
+      guesses.length < maxChallenges &&
       !isGameWon
     ) {
       setCurrentGuess(`${currentGuess}${value}`)
@@ -225,7 +252,11 @@ function App() {
 
     // enforce hard mode - all guesses must contain all previously revealed letters
     if (isHardMode) {
-      const firstMissingReveal = findFirstUnusedReveal(currentGuess, guesses)
+      const firstMissingReveal = findFirstUnusedReveal(
+        solution,
+        currentGuess,
+        guesses
+      )
       if (firstMissingReveal) {
         setCurrentRowClass('jiggle')
         return showErrorAlert(firstMissingReveal, {
@@ -241,11 +272,11 @@ function App() {
       setIsRevealing(false)
     }, REVEAL_TIME_MS * solution.length)
 
-    const winningWord = isWinningWord(currentGuess)
+    const winningWord = isWinningWord(solution, currentGuess)
 
     if (
       unicodeLength(currentGuess) === solution.length &&
-      guesses.length < MAX_CHALLENGES &&
+      guesses.length < maxChallenges &&
       !isGameWon
     ) {
       setGuesses([...guesses, currentGuess])
@@ -253,14 +284,18 @@ function App() {
 
       if (winningWord) {
         if (isLatestGame) {
-          setStats(addStatsForCompletedGame(stats, guesses.length))
+          setStats(
+            addStatsForCompletedGame(stats, guesses.length, maxChallenges)
+          )
         }
         return setIsGameWon(true)
       }
 
-      if (guesses.length === MAX_CHALLENGES - 1) {
+      if (guesses.length === maxChallenges - 1) {
         if (isLatestGame) {
-          setStats(addStatsForCompletedGame(stats, guesses.length + 1))
+          setStats(
+            addStatsForCompletedGame(stats, guesses.length + 1, maxChallenges)
+          )
         }
         setIsGameLost(true)
         showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
@@ -273,14 +308,18 @@ function App() {
 
   return (
     <Div100vh>
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col" dir="rtl">
         <Navbar
           setIsInfoModalOpen={setIsInfoModalOpen}
           setIsStatsModalOpen={setIsStatsModalOpen}
           setIsDatePickerModalOpen={setIsDatePickerModalOpen}
           setIsSettingsModalOpen={setIsSettingsModalOpen}
+          restart={() => {
+            setGuesses([])
+            setIsGameWon(false)
+            setCurrentGuess('')
+          }}
         />
-
         {!isLatestGame && (
           <div className="flex items-center justify-center">
             <ClockIcon className="h-6 w-6 stroke-gray-600 dark:stroke-gray-300" />
@@ -290,6 +329,15 @@ function App() {
           </div>
         )}
 
+        <div className="mt-6 flex items-center justify-center">
+          <ToggleButton
+            disabled={!!guesses.length}
+            options={['קבוצה 1', 'קבוצה 2', 'קבוצה 3']}
+            selected={group}
+            onChanged={(newGroup) => setGroup(newGroup)}
+          />
+        </div>
+
         <div className="mx-auto flex w-full grow flex-col px-1 pt-2 pb-8 sm:px-6 md:max-w-7xl lg:px-8 short:pb-2 short:pt-2">
           <div className="flex grow flex-col justify-center pb-6 short:pb-2">
             <Grid
@@ -298,6 +346,7 @@ function App() {
               currentGuess={currentGuess}
               isRevealing={isRevealing}
               currentRowClassName={currentRowClass}
+              maxChallenges={maxChallenges}
             />
           </div>
           <Keyboard
@@ -312,7 +361,7 @@ function App() {
             isOpen={isInfoModalOpen}
             handleClose={() => setIsInfoModalOpen(false)}
           />
-          <StatsModal
+          {/* <StatsModal
             isOpen={isStatsModalOpen}
             handleClose={() => setIsStatsModalOpen(false)}
             solution={solution}
@@ -335,7 +384,8 @@ function App() {
             isDarkMode={isDarkMode}
             isHighContrastMode={isHighContrastMode}
             numberOfGuessesMade={guesses.length}
-          />
+            maxChallenges={maxChallenges}
+          /> */}
           <DatePickerModal
             isOpen={isDatePickerModalOpen}
             initialDate={solutionGameDate}

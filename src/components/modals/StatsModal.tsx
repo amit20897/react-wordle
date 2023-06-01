@@ -38,6 +38,7 @@ type Props = {
   isDarkMode: boolean
   isHighContrastMode: boolean
   numberOfGuessesMade: number
+  maxChallenges: number
 }
 
 export const StatsModal = ({
@@ -56,6 +57,7 @@ export const StatsModal = ({
   isDarkMode,
   isHighContrastMode,
   numberOfGuessesMade,
+  maxChallenges,
 }: Props) => {
   if (gameStats.totalGames <= 0) {
     return (
@@ -126,7 +128,8 @@ export const StatsModal = ({
                   isDarkMode,
                   isHighContrastMode,
                   handleShareToClipboard,
-                  handleShareFailure
+                  handleShareFailure,
+                  maxChallenges
                 )
               }}
             >
