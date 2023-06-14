@@ -141,7 +141,7 @@ function App() {
 
       case 'קבוצה 3':
         setSolution(SOLUTION_GROUP_3)
-        setMaxChallenges(4)
+        setMaxChallenges(5)
         break
     }
   }, [group])
